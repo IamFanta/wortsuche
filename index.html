@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wortsuche</title>
+  <style>
+    :root{
+      --bg1:#141e30;
+      --bg2:#243b55;
+      --card:#1b263b;
+      --text:#f1f5ff;
+      --muted:#aab6d6;
+      --line:rgba(255,255,255,.08);
+      --accent:#6c63ff;
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+    }
+
+    .wrap{
+      max-width:1000px;
+      margin:0 auto;
+      padding:40px 20px;
+    }
+
+    h1{
+      margin:0 0 20px;
+      font-size:28px;
+      font-weight:600;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:20px;
+      margin-bottom:20px;
+    }
+
+    label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      margin:10px 0 6px;
+    }
+
+    input,button{
+      width:100%;
+      padding:11px 14px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#0f172a;
+      color:var(--text);
+      font-size:15px;
+    }
+
+    input::placeholder{
+      color:#6b7aa8;
+    }
+
+    button{
+      margin-top:14px;
+      border:none;
+      background:var(--accent);
+      font-weight:600;
+      cursor:pointer;
+      transition:0.2s ease;
+    }
+
+    button:hover{
+      opacity:0.9;
+    }
+
+    .results{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .chip{
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:8px 12px;
+      background:#0f172a;
+      text-align:center;
+    }
+
+    .status{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:8px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Wortsuche aus Buchstaben</h1>
+
+  <div class="card">
+    <label for="letters">Buchstaben (z.B. tase oder ba?m)</label>
+    <input id="letters" placeholder="z.B. tase" autocomplete="off" />
+    <button onclick="search()">Suchen</button>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="card">
+    <div class="results" id="results"></div>
+  </div>
+</div>
+
+<script>
+let WORDS = [];
+
+function normalize(s){
+  return (s||"").toLowerCase().replace(/[^a-zäöüß?]/g,"");
+}
+
+function cleanWord(w){
+  return normalize(w).replace(/[^a-zäöüß]/g,"");
+}
+
+function countLetters(str){
+  const map = {};
+  for(let c of str){
+    map[c] = (map[c]||0)+1;
+  }
+  return map;
+}
+
+function canBuild(word, letters){
+  const wordCount = countLetters(word);
+  const letterCount = countLetters(letters.replace(/\?/g,""));
+  const jokers = (letters.match(/\?/g)||[]).length;
+
+  let needed = 0;
+  for(let c in wordCount){
+    const have = letterCount[c]||0;
+    if(wordCount[c] > have){
+      needed += (wordCount[c]-have);
+    }
+    if(needed > jokers) return false;
+  }
+  return true;
+}
+
+function search(){
+  const input = normalize(document.getElementById("letters").value);
+  const resultsDiv = document.getElementById("results");
+  const statusDiv = document.getElementById("status");
+  resultsDiv.innerHTML = "";
+
+  if(!input){
+    statusDiv.textContent = "";
+    return;
+  }
+
+  const matches = WORDS.filter(w => canBuild(w,input));
+  matches.sort((a,b)=>a.length-b.length || a.localeCompare(b,"de"));
+
+  statusDiv.textContent = matches.length + " Treffer von " + WORDS.length + " Wörtern";
+
+  matches.forEach(w=>{
+    const div = document.createElement("div");
+    div.className="chip";
+    div.textContent=w;
+    resultsDiv.appendChild(div);
+  });
+}
+
+async function loadWordList(){
+  try{
+    const res = await fetch("./words.txt");
+    if(!res.ok) throw new Error();
+    const text = await res.text();
+    WORDS = Array.from(new Set(text.split(/\r?\n/).map(cleanWord).filter(Boolean)));
+    document.getElementById("status").textContent = WORDS.length + " Wörter geladen (words.txt)";
+  }catch(e){
+    WORDS = ["baum","raum","traum","haus","maus","taste","seite","brot","wort"];
+    document.getElementById("status").textContent = "Demo-Wortliste geladen";
+  }
+}
+
+loadWordList();
+</script>
+</body>
+</html>
