@@ -4,3 +4,5 @@ ronaldo
 speedserver
 poland
 messi
+Talisman
+Piercing
