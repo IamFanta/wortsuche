@@ -8,3 +8,4 @@ Talisman
 Piercing
 storekeeper
 czech
+Geomi
