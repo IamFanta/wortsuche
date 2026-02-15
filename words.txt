@@ -9,3 +9,4 @@ Piercing
 storekeeper
 czech
 Geomi
+teleporter
