@@ -10,3 +10,5 @@ storekeeper
 czech
 Geomi
 teleporter
+Mirine
+YEONMA
