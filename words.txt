@@ -13,3 +13,7 @@ teleporter
 Mirine
 YEONMA
 Romania
+warrior
+MANTICORES
+ARMOURSMITH
+WEAPONRY
