@@ -21,3 +21,5 @@ pony
 BLACKSMITH
 COSTUME
 sura
+Shrines
+developer
