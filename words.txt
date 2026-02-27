@@ -23,3 +23,6 @@ COSTUME
 sura
 Shrines
 developer
+Storage
+bahar
+sworn
