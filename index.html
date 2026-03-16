@@ -5,13 +5,23 @@
 <title>Metin Clicker</title>
 
 <style>
+
 body{
-    background:#0f0f18;
+    background:#4b2f1e;
     color:white;
     font-family:Arial;
     text-align:center;
+    margin:0;
 }
 
+/* Logo */
+#logo{
+    display:block;
+    margin:30px auto 10px auto;
+    width:350px;
+}
+
+/* Metin Bild */
 #metin{
     width:300px;
     cursor:pointer;
@@ -23,10 +33,11 @@ body{
     transform:scale(0.9);
 }
 
+/* HP Bar */
 .bar{
     width:400px;
     height:25px;
-    background:#333;
+    background:#2b1a10;
     margin:auto;
     border-radius:10px;
     overflow:hidden;
@@ -34,10 +45,11 @@ body{
 
 .hp{
     height:100%;
-    background:#8a2be2;
+    background:#a4632a;
     width:100%;
 }
 
+/* Damage Text */
 .damage{
     position:absolute;
     font-weight:bold;
@@ -61,7 +73,9 @@ body{
 
 <body>
 
-<h1>Metin Clicker</h1>
+<img id="logo" src="elveron.png">
+
+<h2>Metin Clicker</h2>
 
 <div class="bar">
 <div class="hp" id="hpbar"></div>
